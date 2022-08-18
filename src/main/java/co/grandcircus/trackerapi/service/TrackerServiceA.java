@@ -11,12 +11,35 @@ public class TrackerServiceA implements TrackerService {
 	
 	ArrayList<CountPair> myList = new ArrayList<>();
 	
+	//If input token is present in list, that token's count is incremented. If token isn't present, new CountPair is added to the list
 	@Override
 	public void add(String token) {
-		int tokenIndex = myList.indexOf(token);
-		myList.get(tokenIndex).setCount(myList.get(tokenIndex).getCount() + 1);
+		/*
+		if(myList.contains(token)) {
+			int tokenIndex = myList.indexOf(token);
+			myList.get(tokenIndex).setCount(myList.get(tokenIndex).getCount()+1);
+		}else {
+			myList.add(new CountPair(token, 1));
+		}
+		*/
+		
+		boolean needToAddToken = true;
+		
+		for(int i = 0; i < myList.size(); i++) {
+		
+			if(myList.get(i).getToken() == token) {
+				myList.get(i).setCount(myList.get(i).getCount()+1);
+				needToAddToken = false;
+			} 
+		}
+		
+		if(needToAddToken = true) {
+			myList.add(new CountPair(token, 1));
+		}
+		
 	}
-
+	
+	
 	@Override
 	public void reset() {
 		myList.clear();
@@ -40,12 +63,21 @@ public class TrackerServiceA implements TrackerService {
 
 	@Override
 	public String getLatest() {
+		
+		if(myList.isEmpty()) {
+			return "";
+		}
+		
 		int lastIndex = myList.size() - 1;
 		return myList.get(lastIndex).getToken();
 	}
 
 	@Override
 	public CountPair getTop() {
+		
+		if(myList.isEmpty()) {
+			return new CountPair("", 0);
+		}
 		
 		int highestTokenIndex = 0;
 		int highestTokenCount = myList.get(0).getCount();
@@ -55,10 +87,6 @@ public class TrackerServiceA implements TrackerService {
 				highestTokenCount = myList.get(i).getCount();
 				highestTokenIndex = i;
 			}
-		}
-		
-		if(myList.isEmpty()) {
-			return new CountPair("", 0);
 		}
 		
 		return myList.get(highestTokenIndex);
